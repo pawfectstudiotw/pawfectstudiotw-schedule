@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pawfect Studio 繪製排程</title>
+  <style>
+    :root {
+      --cream: #FAF6F1;
+      --warm-white: #FDF9F5;
+      --brown-dark: #3D2B1F;
+      --brown-mid: #7A5C48;
+      --brown-light: #B08D78;
+      --peach: #F0DDD0;
+      --border: #E8D8CC;
+      --sage: #7A8C5C;
+      --yellow: #C8A882;
+      --red: #B66A5F;
+      --shadow: rgba(61, 43, 31, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--brown-dark);
+      background:
+        radial-gradient(circle at top left, rgba(240, 221, 208, 0.75), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(232, 216, 204, 0.9), transparent 36%),
+        var(--cream);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 28px 16px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .card {
+      background: rgba(253, 249, 245, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: 0 18px 48px var(--shadow);
+      padding: 30px 22px 24px;
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brown-light);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0 0 22px;
+      font-size: 28px;
+      line-height: 1.25;
+      color: var(--brown-dark);
+      letter-spacing: 0.03em;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 9px 15px;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--sage);
+    }
+
+    .status-badge.busy { color: #9A753A; background: #FFF9EC; border-color: #E7D1A4; }
+    .status-badge.closed { color: var(--red); background: #FFF4F2; border-color: #E6C1BA; }
+
+    .label {
+      color: var(--brown-mid);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .date-main {
+      font-size: 38px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin: 0 0 14px;
+      color: var(--brown-dark);
+    }
+
+    .small-note {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--brown-mid);
+      margin: 0 0 22px;
+    }
+
+    .update-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 13px 14px;
+      margin: 18px 0 20px;
+      color: var(--brown-mid);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .update-box strong {
+      color: var(--brown-dark);
+      font-weight: 800;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .notice {
+      text-align: left;
+      display: grid;
+      gap: 10px;
+      margin: 0 0 22px;
+      color: var(--brown-mid);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .notice p { margin: 0; }
+
+    .button-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 50px;
+      border-radius: 18px;
+      padding: 13px 16px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      border: 1px solid var(--brown-dark);
+      color: var(--brown-dark);
+      background: #fff;
+    }
+
+    .btn.primary {
+      color: var(--cream);
+      background: linear-gradient(135deg, var(--brown-dark) 0%, #5C3D2E 100%);
+      border: none;
+      box-shadow: 0 10px 22px rgba(61, 43, 31, 0.16);
+    }
+
+    .btn:active { transform: scale(0.985); }
+
+    .helper {
+      margin-top: 18px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--brown-light);
+    }
+
+    .closed-message {
+      display: none;
+      margin: -8px 0 22px;
+      color: var(--red);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .is-closed .start-section { display: none; }
+    .is-closed .closed-message { display: block; }
+
+    @media (max-width: 380px) {
+      body { padding: 20px 12px; }
+      .card { padding: 26px 18px 22px; border-radius: 24px; }
+      h1 { font-size: 25px; }
+      .date-main { font-size: 33px; }
+      .btn { font-size: 15px; min-height: 48px; }
+    }
+  
+    .logo-wrap {
+      text-align: center;
+      margin: 0 auto 18px;
+      line-height: 0;
+    }
+
+    .logo {
+      display: block;
+      width: 230px;
+      max-width: 72%;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .status-pill {
+      margin-top: 0;
+    }
+
+  
+    .card {
+      padding-top: 34px;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding-top: 28px;
+      }
+
+      .logo {
+        width: 205px;
+        max-width: 72%;
+      }
+
+      .logo-wrap {
+        margin-bottom: 16px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card" id="scheduleCard">
+      <div class="logo-wrap"><img src="pawfect-logo.png" alt="Pawfect Studio" class="logo"></div>
+
+      <div class="status-badge" id="statusBadge">🟢 目前接單中</div>
+
+      <div class="start-section">
+        <div class="label">最快可開始繪製日期</div>
+        <div class="date-main" id="startDate">2026 / 07 / 05</div>
+        <p class="small-note">（單隻寵物委託繪製時程：約 5 個工作天）</p>
+      </div>
+
+      <div class="closed-message" id="closedMessage">
+        預計 <span id="reopenDate">2026 / 08 / 01</span> 開放
+      </div>
+
+      <div class="update-box">
+        最後更新時間：<strong id="updateDate">2026 / 06 / 23</strong>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="notice">
+        <p>※ 此為插畫繪製時間，並非收到客製化商品的時間。</p>
+        <p>※ 繪製完成後會進入商品製作流程，商品製作約需 15～21 天。</p>
+      </div>
+
+      <div class="button-stack">
+        <a class="btn primary" id="calculatorLink" href="#" target="_blank" rel="noopener">查看價目試算器</a>
+        <a class="btn" id="artPortfolioLink" href="#" target="_blank" rel="noopener">繪畫作品集</a>
+        <a class="btn" id="productPhotoLink" href="#" target="_blank" rel="noopener">商品照展示</a>
+        <a class="btn" id="productInfoLink" href="#" target="_blank" rel="noopener">各項商品資訊</a>
+      </div>
+
+      <div class="helper">如有送禮時間需求，建議提前安排委託。</div>
+    </section>
+  </main>
+
+  <script>
+    /* =====================================================
+      Pawfect Studio 繪製排程設定區
+      之後只需要修改這一段，不需要改下面的版面程式。
+
+      接單狀態 status 可填：
+      "open"   = 目前接單中 🟢
+      "busy"   = 排程較滿，建議提早預約 🟡
+      "closed" = 暫停接單中 🔴
+    ===================================================== */
+    const scheduleConfig = {
+      status: "open",
+
+      startDate: "2026 / 07 / 30",
+      updateDate: "2026 / 06 / 23",
+      reopenDate: "2026 / 08 / 01",
+
+      calculatorUrl: "https://pawfectstudiotw.github.io/pawfectstudiotw-calculator/",
+      artPortfolioUrl: "https://www.instagram.com/hedy_painting/",
+      productPhotoUrl: "https://www.instagram.com/pawfectstudiotw/",
+      productInfoUrl: "https://www.pawfectstudiotw.com/"
+    };
+
+    const statusMap = {
+      open: {
+        text: "🟢 目前接單中",
+        className: "status-badge"
+      },
+      busy: {
+        text: "🟡 排程較滿，建議提早預約",
+        className: "status-badge busy"
+      },
+      closed: {
+        text: "🔴 暫停接單中",
+        className: "status-badge closed"
+      }
+    };
+
+    function updateSchedulePage() {
+      const config = scheduleConfig;
+      const status = statusMap[config.status] || statusMap.open;
+
+      document.getElementById("statusBadge").textContent = status.text;
+      document.getElementById("statusBadge").className = status.className;
+      document.getElementById("startDate").textContent = config.startDate;
+      document.getElementById("updateDate").textContent = config.updateDate;
+      document.getElementById("reopenDate").textContent = config.reopenDate;
+
+      document.getElementById("calculatorLink").href = config.calculatorUrl;
+      document.getElementById("artPortfolioLink").href = config.artPortfolioUrl;
+      document.getElementById("productPhotoLink").href = config.productPhotoUrl;
+      document.getElementById("productInfoLink").href = config.productInfoUrl;
+
+      document.getElementById("scheduleCard").classList.toggle("is-closed", config.status === "closed");
+    }
+
+    updateSchedulePage();
+  </script>
+</body>
+</html>
