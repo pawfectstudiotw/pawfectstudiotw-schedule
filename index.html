@@ -245,7 +245,7 @@
     <section class="card" id="scheduleCard">
       <div class="logo-wrap"><img src="pawfect-logo.png" alt="Pawfect Studio" class="logo"></div>
 
-      <div class="status-badge" id="statusBadge">🟢 目前接單中</div>
+      <div class="status-badge" id="statusBadge">🟢 排程較滿，建議提早預約</div>
 
       <div class="start-section">
         <div class="label">最快可開始繪製日期</div>
@@ -258,7 +258,7 @@
       </div>
 
       <div class="update-box">
-        最後更新時間：<strong id="updateDate">2026 / 06 / 23</strong>
+        最後更新時間：<strong id="updateDate">2026 / 06 / 25</strong>
       </div>
 
       <div class="divider"></div>
@@ -285,15 +285,15 @@
       之後只需要修改這一段，不需要改下面的版面程式。
 
       接單狀態 status 可填：
-      "open"   = 目前接單中 🟢
+      "open"   = 排程較滿，建議提早預約 🟢
       "busy"   = 排程較滿，建議提早預約 🟡
       "closed" = 暫停接單中 🔴
     ===================================================== */
     const scheduleConfig = {
       status: "open",
 
-      startDate: "2026 / 07 / 30",
-      updateDate: "2026 / 06 / 23",
+      startDate: "2026 / 08 / 08",
+      updateDate: "2026 / 06 / 25",
       reopenDate: "2026 / 08 / 01",
 
       calculatorUrl: "https://pawfectstudiotw.github.io/pawfectstudiotw-calculator/",
@@ -304,7 +304,7 @@
 
     const statusMap = {
       open: {
-        text: "🟢 目前接單中",
+        text: "🟢 排程較滿，建議提早預約",
         className: "status-badge"
       },
       busy: {
